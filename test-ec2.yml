@@ -1,0 +1,29 @@
+#deploy simple ec2 using ansible
+- name: Create a new Demo EC2 instance
+  hosts: aws
+  connection: local
+  gather_facts: False
+  tasks:
+  - name: Create AWS EC2
+    amazon.aws.ec2_instance:
+      name: "EC2-Demo-1"
+      aws_access_key: "{{ my_access_key }}"
+      aws_secret_key: "{{ my_secret_key }}"
+      image_id: ami-0568773882d492fc8 
+      instance_type: t3.micro
+      key_name: aws_instance_Ansible
+      network:
+       assign_public_ip: yes
+      purge_tags: no
+      region: "{{my_region}}"
+      security_group: "{{my_security_group}}"
+      wait: yes
+      state: running
+      volumes:
+       - device_name: /dev/xvda
+         ebs:
+          volume_size: 16
+          delete_on_termination: true
+      vpc_subnet_id: "{{my_vpc_subnet}}"
+      tags:
+       Environment: Testing
